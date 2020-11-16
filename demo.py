@@ -1,37 +1,24 @@
-#!/usr/bin/python3
-
+import os
 import random
 import datetime
 import time
-import os
-import sys
 
 import gpudb
 
-sink_tbl_scm = [
-    ['time', 'string', 'datetime'],
-    ['value', 'int', 'int8']
-]
+
+def default_function():
+    print('Holding pattern...')
+    time.sleep(5000)
 
 
-def grab_or_die(env_var_key):
-    """Retrieve environment variables."""
+def insert_random(kml_api_base, db_conn_str, db_user, db_pass):
 
-    if env_var_key not in os.environ:
-        print(f'Could not find environment variable: {env_var_key} ')
-        sys.exit(1)
+    sink_tbl_name = os.environ['SINK_TABLE']
 
-    return os.environ[env_var_key]
-
-
-if __name__ == "__main__":
-
-    # Retrieve environment variables
-    kml_api_base = grab_or_die('KML_CONN_STR')
-    db_conn_str = grab_or_die('DB_CONN_STR')
-    db_user = grab_or_die('DB_USER')
-    db_pass = grab_or_die('DB_PASS')
-    sink_tbl_name = grab_or_die('SINK_TABLE')
+    sink_tbl_scm = [
+        ['time', 'string', 'datetime'],
+        ['value', 'int', 'int8']
+    ]
 
     # Get database handle
     db = gpudb.GPUdb(

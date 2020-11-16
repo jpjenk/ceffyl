@@ -1,7 +1,5 @@
 #!/usr/bin/python3
 
-import random
-import datetime
 import time
 import os
 import sys
@@ -17,6 +15,13 @@ def grab_or_die(env_var_key):
     return os.environ[env_var_key]
 
 
+def get_launch():
+    if SLIP_MODULE in os.environ and SLIP_FUNCTION in os.environ:
+        return os.environ[SLIP_MODULE], os.environ[SLIP_FUNCTION]
+    else:
+        return 'demo', 'default_function'
+
+
 if __name__ == "__main__":
 
     # Retrieve environment variables
@@ -25,5 +30,9 @@ if __name__ == "__main__":
     db_user = grab_or_die('DB_USER')
     db_pass = grab_or_die('DB_PASS')
 
+    # Get module and function names if available
+    module, function = get_launch()
 
-    x = 1/0
+    # Assign and call function
+    run_func = getattr(__import__(module), function)
+    run_func(kml_api_base, db_conn_str, db_user, db_pass)
